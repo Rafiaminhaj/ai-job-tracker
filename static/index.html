@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Job Application Tracker | Code Kitchen Auditions</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background glowing gradients -->
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+
+    <!-- Header navigation -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fa-solid fa-cloud-bolt logo-icon"></i>
+                <h1>Code<span>Kitchen</span> AI Job Tracker</h1>
+            </div>
+            <div class="user-badge">
+                <span class="user-name">Rafia Minhaj</span>
+                <div class="avatar">RM</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-dashboard container">
+        
+        <!-- Stats Summary Section -->
+        <section class="stats-section">
+            <div class="stat-card glass scroll-reveal">
+                <div class="stat-icon applied"><i class="fa-solid fa-paper-plane"></i></div>
+                <div class="stat-info">
+                    <h3 id="stat-applied">0</h3>
+                    <p>Applied</p>
+                </div>
+            </div>
+            <div class="stat-card glass scroll-reveal">
+                <div class="stat-icon interviewing"><i class="fa-solid fa-comments"></i></div>
+                <div class="stat-info">
+                    <h3 id="stat-interviewing">0</h3>
+                    <p>Interviewing</p>
+                </div>
+            </div>
+            <div class="stat-card glass scroll-reveal">
+                <div class="stat-icon offered"><i class="fa-solid fa-trophy"></i></div>
+                <div class="stat-info">
+                    <h3 id="stat-offered">0</h3>
+                    <p>Offered</p>
+                </div>
+            </div>
+            <div class="stat-card glass scroll-reveal">
+                <div class="stat-icon rejected"><i class="fa-solid fa-circle-xmark"></i></div>
+                <div class="stat-info">
+                    <h3 id="stat-rejected">0</h3>
+                    <p>Rejected</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Two Columns Layout -->
+        <div class="dashboard-grid">
+            
+            <!-- Left Column: Application list -->
+            <div class="left-column">
+                <div class="column-header">
+                    <h2><i class="fa-solid fa-list-check"></i> Job Applications</h2>
+                    <button class="btn btn-primary add-btn" id="open-modal-btn">
+                        <i class="fa-solid fa-plus"></i> Add Application
+                    </button>
+                </div>
+
+                <div class="job-list-container" id="job-list">
+                    <!-- Dynamic Job Cards will render here -->
+                    <div class="empty-state">
+                        <i class="fa-solid fa-folder-open empty-icon"></i>
+                        <p>No job applications logged yet. Click 'Add Application' to get started!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: AI Assistant (Resume Analyzer & Email Drafter) -->
+            <div class="right-column">
+                
+                <!-- Tab Headers -->
+                <div class="tab-header glass">
+                    <button class="tab-btn active" onclick="switchTab('analyzer')">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i> Resume Analyzer
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('drafter')">
+                        <i class="fa-solid fa-envelope-open-text"></i> Email Drafter
+                    </button>
+                </div>
+
+                <!-- Tab content 1: Resume Analyzer -->
+                <div class="tab-content active glass" id="tab-analyzer">
+                    <div class="ai-box">
+                        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> ATS Match Optimizer</h3>
+                        <p class="subtitle">Paste the Job Description to check score and optimize your resume instantly.</p>
+                        
+                        <div class="form-group">
+                            <label for="jd-text">Job Description</label>
+                            <textarea id="jd-text" placeholder="Paste the Job Description here..." rows="6"></textarea>
+                        </div>
+
+                        <div class="form-group optional-resume">
+                            <label for="resume-text">Your Resume (Leave blank for default profile)</label>
+                            <textarea id="resume-text" placeholder="Default is Rafia Minhaj's profile..." rows="4"></textarea>
+                        </div>
+
+                        <button class="btn btn-primary btn-block" id="analyze-btn">
+                            Analyze with Gemini <i class="fa-solid fa-brain"></i>
+                        </button>
+                    </div>
+
+                    <!-- Analysis Result Panel (Initially Hidden) -->
+                    <div class="analysis-result" id="analysis-result-panel" style="display: none;">
+                        <div class="divider"></div>
+                        <div class="score-circle-wrapper">
+                            <div class="score-circle">
+                                <svg class="progress-ring" width="120" height="120">
+                                    <circle class="progress-ring__circle-bg" stroke="#101726" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                                    <circle class="progress-ring__circle" id="progress-circle" stroke="var(--primary-color)" stroke-width="8" stroke-dasharray="326.72" stroke-dashoffset="326.72" fill="transparent" r="52" cx="60" cy="60"/>
+                                </svg>
+                                <span class="score-value" id="score-text">0%</span>
+                            </div>
+                            <div class="score-label">ATS Match Score</div>
+                        </div>
+
+                        <div class="skills-grid">
+                            <div class="skills-block">
+                                <h4 class="matching-title"><i class="fa-solid fa-circle-check"></i> Matching Skills</h4>
+                                <div class="tags-container" id="matching-tags">
+                                    <!-- Dynamic tags -->
+                                </div>
+                            </div>
+                            <div class="skills-block">
+                                <h4 class="missing-title"><i class="fa-solid fa-triangle-exclamation"></i> Missing Skills</h4>
+                                <div class="tags-container" id="missing-tags">
+                                    <!-- Dynamic tags -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tips-block">
+                            <h4><i class="fa-solid fa-lightbulb"></i> Optimization Tips</h4>
+                            <ul id="tips-list">
+                                <!-- Dynamic tips -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab content 2: Email Drafter -->
+                <div class="tab-content glass" id="tab-drafter">
+                    <div class="ai-box">
+                        <h3><i class="fa-solid fa-pen-nib"></i> AI Interview Follow-up & Outreach</h3>
+                        <p class="subtitle">Generate custom email drafts using Google Gemini.</p>
+                        
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="email-job">Job Title</label>
+                                <input type="text" id="email-job" placeholder="e.g. Python Developer">
+                            </div>
+                            <div class="form-group col">
+                                <label for="email-company">Company</label>
+                                <input type="text" id="email-company" placeholder="e.g. Hireflux">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email-stage">Outreach Stage</label>
+                            <select id="email-stage">
+                                <option value="Cold Outreach">Cold Outreach Email</option>
+                                <option value="Interview Follow-up">Interview Follow-up</option>
+                                <option value="Post-Application Nudge">Post-Application Nudge (Alert)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email-context">Additional Context (Optional)</label>
+                            <input type="text" id="email-context" placeholder="e.g. Mention my FastAPI and GSSoC rank">
+                        </div>
+
+                        <button class="btn btn-primary btn-block" id="draft-btn">
+                            Generate Draft with Gemini <i class="fa-solid fa-bolt"></i>
+                        </button>
+                    </div>
+
+                    <!-- Email Output Panel (Initially Hidden) -->
+                    <div class="email-output-panel" id="email-output-panel" style="display: none;">
+                        <div class="divider"></div>
+                        <div class="email-output-header">
+                            <h4>Draft Result</h4>
+                            <button class="btn-copy" id="copy-email-btn" title="Copy to Clipboard">
+                                <i class="fa-solid fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <pre class="email-content" id="email-content-box"></pre>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Modal Form (For adding jobs) -->
+    <div class="modal-overlay" id="job-modal">
+        <div class="modal-card glass">
+            <div class="modal-header">
+                <h3>Log New Application</h3>
+                <button class="close-btn" id="close-modal-btn">&times;</button>
+            </div>
+            <form id="add-job-form">
+                <div class="form-group">
+                    <label for="job-title">Job Title *</label>
+                    <input type="text" id="job-title" required placeholder="e.g. Python Developer">
+                </div>
+                <div class="form-group">
+                    <label for="job-company">Company *</label>
+                    <input type="text" id="job-company" required placeholder="e.g. Hireflux">
+                </div>
+                <div class="form-row">
+                    <div class="form-group col">
+                        <label for="job-status">Status</label>
+                        <select id="job-status">
+                            <option value="Applied">Applied</option>
+                            <option value="Interviewing">Interviewing</option>
+                            <option value="Offered">Offered</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="form-group col">
+                        <label for="job-url">Job Post URL</label>
+                        <input type="url" id="job-url" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="job-description">Job Description (JD)</label>
+                    <textarea id="job-description" rows="4" placeholder="Paste full JD here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="job-notes">Notes</label>
+                    <input type="text" id="job-notes" placeholder="e.g. Relocation discussed, telephonic interview scheduled">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Save to Cloud Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alert notifications -->
+    <div class="notification-container" id="notification-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
