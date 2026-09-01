@@ -16,14 +16,12 @@ An automated career optimization pipeline and job application dashboard built wi
 ## 🏗️ Google Cloud Architecture
 
 ```mermaid
-graph TD
-    User([Job Seeker]) -->|Interacts| Frontend[React / HTML Frontend]
-    Frontend -->|API Requests| Backend[FastAPI Backend - Cloud Run]
-    Backend -->|Read/Write Logs| DB[Google Cloud Firestore]
-    Backend -->|Structured Prompt| VertexAI[Vertex AI - Gemini 1.5 Flash]
-    Backend -->|Cron Alerts| Scheduler[Cloud Scheduler]
-    Scheduler -->|Trigger Tasks| Tasks[Cloud Tasks]
-    Tasks -->|Nudges| EmailAPI[Email Gateway]
+flowchart TD
+    A["Job Seeker"] -->|Interacts| B["Glassmorphic Frontend"]
+    B -->|API Requests| C["FastAPI Backend (Cloud Run)"]
+    C -->|Read/Write Logs| D["Google Cloud Firestore"]
+    C -->|Structured JSON Prompt| E["Vertex AI (Gemini 1.5 Flash)"]
+    C -->|Cron Alerts| F["Cloud Scheduler & Tasks"]
 ```
 
 ---
