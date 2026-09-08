@@ -173,14 +173,14 @@ def get_mock_analysis(job_description: str) -> Dict[str, Any]:
     }
 
 def get_mock_poster_analysis() -> Dict[str, Any]:
-    """Generates realistic mock Vision AI output for demo job poster scans."""
+    """Generates realistic mock Vision AI output for demo job poster scans when GEMINI_API_KEY is not set."""
     return {
-        "title": "AI Agent / SDE Engineer",
-        "company": "SnapDev AI Labs",
-        "required_skills": ["Python", "FastAPI", "Gemini Vision", "Docker"],
-        "salary_range": "INR 12 LPA - 18 LPA",
-        "description": "Looking for an AI Engineer to build agentic workflows, on-device developer tools, and multimodal vision integrations with Project Astra.",
-        "notes": "Scanned via Astra Vision AI (On-Device OCR & Multimodal LLM)"
+        "title": "Admin Staff / Operations SDE",
+        "company": "Larana, Inc.",
+        "required_skills": ["Good communication skills", "Microsoft Office", "Attention to detail", "Multitasking ability"],
+        "salary_range": "Not specified",
+        "description": "We need an organized and reliable individual to support daily operations efficiently. Contact: hello@reallygreatsite.com",
+        "notes": "Scanned via Astra Vision AI (Demo Mode - Add GEMINI_API_KEY in .env for real live vision)"
     }
 
 def get_mock_email(job_title: str, company: str, stage: str) -> str:
