@@ -97,6 +97,9 @@
                     <button class="tab-btn" onclick="switchTab('drafter')">
                         <i class="fa-solid fa-envelope-open-text"></i> Email Drafter
                     </button>
+                    <button class="tab-btn" onclick="switchTab('vision')">
+                        <i class="fa-solid fa-camera-retro"></i> Astra Vision AI
+                    </button>
                 </div>
 
                 <!-- Tab content 1: Resume Analyzer -->
@@ -204,6 +207,62 @@
                             </button>
                         </div>
                         <pre class="email-content" id="email-content-box"></pre>
+                    </div>
+                </div>
+
+                <!-- Tab content 3: Astra Vision AI Scanner -->
+                <div class="tab-content glass" id="tab-vision">
+                    <div class="ai-box">
+                        <h3><i class="fa-solid fa-eye" style="color: #a855f7;"></i> Astra Multimodal Vision Scanner</h3>
+                        <p class="subtitle">Upload a job poster, photo, hiring flyer, or screenshot. Gemini Vision extracts title, company, skills & salary instantly!</p>
+                        
+                        <div class="dropzone" id="poster-dropzone">
+                            <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                            <p id="dropzone-text">Drag & drop job poster image here, or <span>Browse File</span></p>
+                            <input type="file" id="poster-file-input" accept="image/*" style="display: none;">
+                            <div id="file-preview-info" class="file-preview-info" style="display: none;"></div>
+                        </div>
+
+                        <button class="btn btn-primary btn-block" id="scan-poster-btn" style="margin-top: 15px; background: linear-gradient(135deg, #a855f7, #6366f1); border: none;">
+                            Scan Poster with Astra Vision AI <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </button>
+                    </div>
+
+                    <!-- Vision Scan Result Panel -->
+                    <div class="vision-result-panel" id="vision-result-panel" style="display: none;">
+                        <div class="divider"></div>
+                        <div class="vision-header">
+                            <h4><i class="fa-solid fa-sparkles" style="color: #a855f7;"></i> Astra Extracted Job Metadata</h4>
+                        </div>
+                        
+                        <div class="extracted-details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Job Title</span>
+                                <span class="detail-value" id="vision-title">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Company</span>
+                                <span class="detail-value" id="vision-company">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Salary Range</span>
+                                <span class="detail-value" id="vision-salary" style="color: #10b981;">-</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label>Required Skills Identified</label>
+                            <div class="tags-container" id="vision-skills-tags"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Extracted Description</label>
+                            <textarea id="vision-description" rows="3" readonly></textarea>
+                        </div>
+
+                        <button class="btn btn-primary btn-block" id="autofill-job-btn" style="background: #10b981; margin-top: 10px;">
+                            <i class="fa-solid fa-square-plus"></i> Auto-Fill & Log Application
+                        </button>
                     </div>
                 </div>
 

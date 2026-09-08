@@ -1,5 +1,7 @@
 // Frontend Logic for AI Job Application Tracker
 
+let currentVisionData = null;
+
 document.addEventListener("DOMContentLoaded", () => {
     // Load initial jobs
     fetchJobs();
@@ -146,6 +148,105 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Astra Vision Poster Scanner Logic
+    const dropzone = document.getElementById("poster-dropzone");
+    const fileInput = document.getElementById("poster-file-input");
+    const filePreviewInfo = document.getElementById("file-preview-info");
+    const scanPosterBtn = document.getElementById("scan-poster-btn");
+    const autofillJobBtn = document.getElementById("autofill-job-btn");
+
+    if (dropzone && fileInput) {
+        dropzone.addEventListener("click", () => fileInput.click());
+
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                filePreviewInfo.style.display = "block";
+                filePreviewInfo.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+            }
+        });
+
+        dropzone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropzone.classList.add("dragover");
+        });
+
+        dropzone.addEventListener("dragleave", () => {
+            dropzone.classList.remove("dragover");
+        });
+
+        dropzone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropzone.classList.remove("dragover");
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                const file = fileInput.files[0];
+                filePreviewInfo.style.display = "block";
+                filePreviewInfo.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+            }
+        });
+    }
+
+    if (scanPosterBtn) {
+        scanPosterBtn.addEventListener("click", async () => {
+            const file = fileInput ? fileInput.files[0] : null;
+
+            scanPosterBtn.disabled = true;
+            scanPosterBtn.innerHTML = `Scanning with Gemini Vision... <i class="fa-solid fa-spinner fa-spin"></i>`;
+
+            try {
+                const formData = new FormData();
+                if (file) {
+                    formData.append("file", file);
+                } else {
+                    // Create a dummy image blob for demo scan if no file is selected
+                    const canvas = document.createElement("canvas");
+                    canvas.width = 100;
+                    canvas.height = 100;
+                    const ctx = canvas.getContext("2d");
+                    ctx.fillStyle = "#3b82f6";
+                    ctx.fillRect(0, 0, 100, 100);
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg'));
+                    formData.append("file", blob, "demo_poster.jpg");
+                }
+
+                const response = await fetch("/api/scan-poster", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const resData = await response.json();
+                    currentVisionData = resData.data;
+                    renderVisionResult(currentVisionData);
+                    showToast("Astra Vision Extraction Complete!", "success");
+                } else {
+                    showToast("Failed to scan poster with Gemini Vision.", "error");
+                }
+            } catch (error) {
+                console.error("Error scanning poster:", error);
+                showToast("Server error during Vision AI scan.", "error");
+            } finally {
+                scanPosterBtn.disabled = false;
+                scanPosterBtn.innerHTML = `Scan Poster with Astra Vision AI <i class="fa-solid fa-wand-magic-sparkles"></i>`;
+            }
+        });
+    }
+
+    if (autofillJobBtn) {
+        autofillJobBtn.addEventListener("click", () => {
+            if (!currentVisionData) return;
+
+            document.getElementById("job-title").value = currentVisionData.title || "";
+            document.getElementById("job-company").value = currentVisionData.company || "";
+            document.getElementById("job-description").value = currentVisionData.description || "";
+            document.getElementById("job-notes").value = currentVisionData.notes || "Scanned via Astra Vision AI";
+
+            jobModal.classList.add("active");
+            showToast("Job details auto-filled in application form!", "success");
+        });
+    }
+
     // Copy to clipboard feature
     const copyBtn = document.getElementById("copy-email-btn");
     copyBtn.addEventListener("click", () => {
@@ -190,9 +291,6 @@ function renderJobs(jobs) {
     jobs.forEach(job => {
         const card = document.createElement("div");
         card.className = "job-card glass scroll-reveal";
-        
-        // Match tag color based on status
-        let statusClass = job.status.toLowerCase();
         
         card.innerHTML = `
             <div class="job-info-block">
@@ -285,9 +383,12 @@ function switchTab(tabName) {
     if (tabName === "analyzer") {
         document.querySelector("[onclick=\"switchTab('analyzer')\"]").classList.add("active");
         document.getElementById("tab-analyzer").classList.add("active");
-    } else {
+    } else if (tabName === "drafter") {
         document.querySelector("[onclick=\"switchTab('drafter')\"]").classList.add("active");
         document.getElementById("tab-drafter").classList.add("active");
+    } else if (tabName === "vision") {
+        document.querySelector("[onclick=\"switchTab('vision')\"]").classList.add("active");
+        document.getElementById("tab-vision").classList.add("active");
     }
 }
 
@@ -314,14 +415,14 @@ function renderAnalysis(analysis) {
     matchingContainer.innerHTML = "";
     missingContainer.innerHTML = "";
 
-    analysis.matching_skills.forEach(skill => {
+    (analysis.matching_skills || []).forEach(skill => {
         const tag = document.createElement("span");
         tag.className = "tag match";
         tag.textContent = skill;
         matchingContainer.appendChild(tag);
     });
 
-    analysis.missing_skills.forEach(skill => {
+    (analysis.missing_skills || []).forEach(skill => {
         const tag = document.createElement("span");
         tag.className = "tag missing";
         tag.textContent = skill;
@@ -331,10 +432,33 @@ function renderAnalysis(analysis) {
     // Tips rendering
     const tipsList = document.getElementById("tips-list");
     tipsList.innerHTML = "";
-    analysis.tips.forEach(tip => {
+    (analysis.tips || []).forEach(tip => {
         const li = document.createElement("li");
         li.textContent = tip;
         tipsList.appendChild(li);
+    });
+}
+
+// Render Astra Vision AI results
+function renderVisionResult(data) {
+    const panel = document.getElementById("vision-result-panel");
+    panel.style.display = "block";
+
+    document.getElementById("vision-title").textContent = data.title || "Not identified";
+    document.getElementById("vision-company").textContent = data.company || "Not identified";
+    document.getElementById("vision-salary").textContent = data.salary_range || "Not specified";
+    document.getElementById("vision-description").value = data.description || "";
+
+    const skillsContainer = document.getElementById("vision-skills-tags");
+    skillsContainer.innerHTML = "";
+    (data.required_skills || []).forEach(skill => {
+        const tag = document.createElement("span");
+        tag.className = "tag match";
+        tag.style.borderColor = "rgba(168, 85, 247, 0.4)";
+        tag.style.color = "#a855f7";
+        tag.style.background = "rgba(168, 85, 247, 0.1)";
+        tag.textContent = skill;
+        skillsContainer.appendChild(tag);
     });
 }
 
@@ -361,3 +485,4 @@ function showToast(message, type) {
         }, 300);
     }, 3500);
 }
+

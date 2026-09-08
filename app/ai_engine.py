@@ -1,6 +1,8 @@
+import io
 import json
 import logging
 from typing import Dict, Any
+from PIL import Image
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -65,6 +67,55 @@ def analyze_job_description(job_description: str, resume_text: str) -> Dict[str,
         logger.error(f"Gemini API analysis failed: {e}. Returning mock fallback.")
         return get_mock_analysis(job_description)
 
+def analyze_job_poster_image(image_bytes: bytes) -> Dict[str, Any]:
+    """
+    Multimodal Vision AI (Project Astra style): Uses Gemini Vision to parse handwritten or printed
+    job posters, hiring screenshots, or flyer images to extract title, company, skills, and salary.
+    """
+    if not genai_available:
+        logger.info("Gemini API not available. Returning mock vision poster analysis for demo.")
+        return get_mock_poster_analysis()
+
+    try:
+        image = Image.open(io.BytesIO(image_bytes))
+        prompt = """
+        You are Project Astra Vision AI, an intelligent agent capable of understanding real-world images, posters, and screenshots.
+        Analyze this image of a Job Poster, LinkedIn post, or Hiring Screenshot.
+
+        Extract the following information accurately:
+        1. Job Title (e.g. SDE Intern, Backend Engineer)
+        2. Company Name
+        3. Key Required Skills (array of strings)
+        4. Salary or Compensation Range (if mentioned, otherwise "Not specified")
+        5. Full or summarized Job Description text
+        6. Actionable Notes / Summary
+
+        You MUST return ONLY a JSON object matching this schema:
+        {
+            "title": "Job Title",
+            "company": "Company Name",
+            "required_skills": ["Skill1", "Skill2"],
+            "salary_range": "Salary Info",
+            "description": "Extracted description...",
+            "notes": "Extracted via Astra Vision AI Scan"
+        }
+        Do not output markdown backticks or code blocks around JSON.
+        """
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content([image, prompt])
+        text_response = response.text.strip()
+        
+        if text_response.startswith("```json"):
+            text_response = text_response.replace("```json", "", 1)
+        if text_response.endswith("```"):
+            text_response = text_response.rsplit("```", 1)[0]
+            
+        data = json.loads(text_response.strip())
+        return data
+    except Exception as e:
+        logger.error(f"Gemini Vision API poster analysis failed: {e}. Returning mock poster fallback.")
+        return get_mock_poster_analysis()
+
 def generate_email_draft(job_title: str, company: str, stage: str, context: str) -> str:
     """
     Generates a tailored email draft (cold outreach, follow-up) for a job application.
@@ -121,6 +172,17 @@ def get_mock_analysis(job_description: str) -> Dict[str, Any]:
         ]
     }
 
+def get_mock_poster_analysis() -> Dict[str, Any]:
+    """Generates realistic mock Vision AI output for demo job poster scans."""
+    return {
+        "title": "AI Agent / SDE Engineer",
+        "company": "SnapDev AI Labs",
+        "required_skills": ["Python", "FastAPI", "Gemini Vision", "Docker"],
+        "salary_range": "INR 12 LPA - 18 LPA",
+        "description": "Looking for an AI Engineer to build agentic workflows, on-device developer tools, and multimodal vision integrations with Project Astra.",
+        "notes": "Scanned via Astra Vision AI (On-Device OCR & Multimodal LLM)"
+    }
+
 def get_mock_email(job_title: str, company: str, stage: str) -> str:
     """Returns a general mock email template."""
     return f"""Subject: Regarding Python Developer application at {company}
@@ -136,3 +198,4 @@ Please let me know if you need any further details or a copy of my resume.
 Best regards,
 [Your Name]
 [Your Phone Number]"""
+

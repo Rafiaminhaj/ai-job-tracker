@@ -1,6 +1,6 @@
 import uuid
 import datetime
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException, Body, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -129,6 +129,16 @@ def analyze_job(payload: AnalysisRequestSchema):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/scan-poster")
+async def scan_job_poster(file: UploadFile = File(...)):
+    """Multimodal Vision AI endpoint (Project Astra) to extract job metadata from job poster images or screenshots."""
+    try:
+        contents = await file.read()
+        result = ai_engine.analyze_job_poster_image(contents)
+        return {"status": "success", "data": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/api/draft-email")
 def draft_email(payload: EmailDraftRequestSchema):
     """Generate a custom email draft for follow-ups or cold pitches using Gemini."""
@@ -145,3 +155,4 @@ def draft_email(payload: EmailDraftRequestSchema):
 
 # Mount Frontend static files on the root url
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
