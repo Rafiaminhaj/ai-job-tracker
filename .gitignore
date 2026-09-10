@@ -15,7 +15,9 @@ db.sqlite3
 
 # Credentials & Key Files
 *.json
+!vercel.json
 credentials.json
+
 
 # IDEs
 .idea/
