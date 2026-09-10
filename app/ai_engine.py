@@ -185,8 +185,49 @@ def get_mock_poster_analysis() -> Dict[str, Any]:
     }
 
 def send_user_email_notification(to_email: str, company: str, job_title: str):
-    """Dispatches real-time email notification alert to Rafia when Auto-Apply AI Agent completes an application."""
-    logger.info(f"Dispatched email notification alert to {to_email} for {company} ({job_title})")
+    """Dispatches real-time email notification alert to Rafia's actual Gmail inbox when Auto-Apply AI Agent completes an application."""
+    sender_email = getattr(settings, "SENDER_EMAIL", "rafiaminhaj423@gmail.com")
+    sender_password = getattr(settings, "SENDER_APP_PASSWORD", "")
+
+    if not sender_password:
+        logger.info(f"Dispatched simulated email notification alert to {to_email} for {company} ({job_title}) (Set SENDER_APP_PASSWORD in .env for live Gmail inbox delivery)")
+        return
+
+    try:
+        import smtplib
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = to_email
+        msg['Subject'] = f"🚀 [AI Job Tracker Alert] Auto-Applied to {company}!"
+
+        body = f"""Hi Rafia,
+
+Your Autonomous AI Job Tracker Agent has successfully applied to {company} for the role of {job_title}!
+
+Application Summary:
+- Candidate Name: Rafia Minhaj
+- College: B.Tech CSE ('27), CIT Ranchi
+- Verified Resume PDF: Attached & Submitted
+- Status: Auto-Applied & Logged to Dashboard
+
+Keep up the great work and focus on your interview preparation!
+
+Best regards,
+CodeKitchen AI Job Tracker Engine
+"""
+        msg.attach(MIMEText(body, 'plain'))
+
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.send_message(msg)
+        server.quit()
+        logger.info(f"REAL GMAIL EMAIL SENT to {to_email} via SMTP for {company}!")
+    except Exception as e:
+        logger.error(f"Failed to send real Gmail SMTP email: {e}")
 
 def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = None, resume_url: Optional[str] = None) -> Dict[str, Any]:
     """
