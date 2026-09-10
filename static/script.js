@@ -424,19 +424,16 @@ function switchTab(tabName) {
     document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
 
-    // Activate selected
-    if (tabName === "analyzer") {
-        document.querySelector("[onclick=\"switchTab('analyzer')\"]").classList.add("active");
-        document.getElementById("tab-analyzer").classList.add("active");
-    } else if (tabName === "drafter") {
-        document.querySelector("[onclick=\"switchTab('drafter')\"]").classList.add("active");
-        document.getElementById("tab-drafter").classList.add("active");
-    } else if (tabName === "vision") {
-        document.querySelector("[onclick=\"switchTab('vision')\"]").classList.add("active");
-        document.getElementById("tab-vision").classList.add("active");
-    } else if (tabName === "autoapply") {
-        document.querySelector("[onclick=\"switchTab('autoapply')\"]").classList.add("active");
-        document.getElementById("tab-autoapply").classList.add("active");
+    // Activate selected tab content
+    const targetContent = document.getElementById(`tab-${tabName}`);
+    if (targetContent) {
+        targetContent.classList.add("active");
+    }
+
+    // Activate matching button
+    const targetBtn = document.querySelector(`[onclick*="${tabName}"]`) || document.querySelector(`[data-tab="${tabName}"]`);
+    if (targetBtn) {
+        targetBtn.classList.add("active");
     }
 }
 
