@@ -247,6 +247,51 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Launch Autonomous Auto-Apply AI Agent Logic
+    const launchAgentBtn = document.getElementById("launch-agent-btn");
+    if (launchAgentBtn) {
+        launchAgentBtn.addEventListener("click", async () => {
+            const company = document.getElementById("autoapply-company").value.trim();
+            const url = document.getElementById("autoapply-url").value.trim();
+            const hrEmail = document.getElementById("autoapply-hremail").value.trim();
+
+            if (!company || !url) {
+                showToast("Please enter Company Name and Target Job URL!", "error");
+                return;
+            }
+
+            launchAgentBtn.disabled = true;
+            launchAgentBtn.innerHTML = `Running Autonomous Agent... <i class="fa-solid fa-spinner fa-spin"></i>`;
+
+            try {
+                const response = await fetch("/api/auto-apply", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        company: company,
+                        job_url: url,
+                        hr_email: hrEmail ? hrEmail : null
+                    })
+                });
+
+                if (response.ok) {
+                    const resData = await response.json();
+                    renderAgentLog(resData.agent_result);
+                    showToast(`Autonomous AI Agent Applied to ${company}!`, "success");
+                    fetchJobs(); // Refresh dashboard jobs list
+                } else {
+                    showToast("AI Agent execution failed.", "error");
+                }
+            } catch (error) {
+                console.error("Error running AI Agent:", error);
+                showToast("Server error running Auto-Apply Agent.", "error");
+            } finally {
+                launchAgentBtn.disabled = false;
+                launchAgentBtn.innerHTML = `Launch Auto-Apply AI Agent <i class="fa-solid fa-rocket"></i>`;
+            }
+        });
+    }
+
     // Copy to clipboard feature
     const copyBtn = document.getElementById("copy-email-btn");
     copyBtn.addEventListener("click", () => {
@@ -389,7 +434,33 @@ function switchTab(tabName) {
     } else if (tabName === "vision") {
         document.querySelector("[onclick=\"switchTab('vision')\"]").classList.add("active");
         document.getElementById("tab-vision").classList.add("active");
+    } else if (tabName === "autoapply") {
+        document.querySelector("[onclick=\"switchTab('autoapply')\"]").classList.add("active");
+        document.getElementById("tab-autoapply").classList.add("active");
     }
+}
+
+// Render Agent execution step logs
+function renderAgentLog(result) {
+    const panel = document.getElementById("agent-result-panel");
+    const list = document.getElementById("agent-steps-list");
+    panel.style.display = "block";
+    list.innerHTML = "";
+
+    (result.steps_completed || []).forEach(step => {
+        const item = document.createElement("li");
+        item.style.fontSize = "13px";
+        item.style.color = "var(--text-primary)";
+        item.style.background = "rgba(255, 255, 255, 0.03)";
+        item.style.border = "1px solid var(--card-border)";
+        item.style.padding = "10px 14px";
+        item.style.borderRadius = "8px";
+        item.style.display = "flex";
+        item.style.alignItems = "center";
+        item.style.gap = "10px";
+        item.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #38bdf8;"></i> <span>${step}</span>`;
+        list.appendChild(item);
+    });
 }
 
 // Render Resume analysis results

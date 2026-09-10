@@ -100,6 +100,9 @@
                     <button class="tab-btn" onclick="switchTab('vision')">
                         <i class="fa-solid fa-camera-retro"></i> Astra Vision AI
                     </button>
+                    <button class="tab-btn" onclick="switchTab('autoapply')">
+                        <i class="fa-solid fa-robot"></i> Auto-Apply Agent
+                    </button>
                 </div>
 
                 <!-- Tab content 1: Resume Analyzer -->
@@ -263,6 +266,43 @@
                         <button class="btn btn-primary btn-block" id="autofill-job-btn" style="background: #10b981; margin-top: 10px;">
                             <i class="fa-solid fa-square-plus"></i> Auto-Fill & Log Application
                         </button>
+                    </div>
+                </div>
+
+                <!-- Tab content 4: Autonomous Auto-Apply Agent -->
+                <div class="tab-content glass" id="tab-autoapply">
+                    <div class="ai-box">
+                        <h3><i class="fa-solid fa-robot" style="color: #38bdf8;"></i> Autonomous Auto-Apply AI Agent</h3>
+                        <p class="subtitle">Enter target Job URL & HR email. The AI Agent auto-fills candidate details, attaches resume PDF, dispatches cold outreach, & logs to dashboard!</p>
+                        
+                        <div class="form-group">
+                            <label for="autoapply-company">Company Name *</label>
+                            <input type="text" id="autoapply-company" placeholder="e.g. Deloitte India / Juspay / Swiggy">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="autoapply-url">Target Job Post / Careers URL *</label>
+                            <input type="url" id="autoapply-url" placeholder="https://careers.deloitte.com/job/123">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="autoapply-hremail">Target HR / Recruiter Email (Optional)</label>
+                            <input type="email" id="autoapply-hremail" placeholder="e.g. indiacareers@deloitte.com">
+                        </div>
+
+                        <button class="btn btn-primary btn-block" id="launch-agent-btn" style="background: linear-gradient(135deg, #0284c7, #38bdf8); border: none; margin-top: 10px;">
+                            Launch Auto-Apply AI Agent <i class="fa-solid fa-rocket"></i>
+                        </button>
+                    </div>
+
+                    <!-- Agent Execution Result Panel -->
+                    <div class="agent-result-panel" id="agent-result-panel" style="display: none; margin-top: 20px;">
+                        <div class="divider"></div>
+                        <h4><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Agent Execution Log</h4>
+                        
+                        <ul class="agent-steps-list" id="agent-steps-list" style="margin-top: 12px; list-style: none; display: flex; flex-direction: column; gap: 8px;">
+                            <!-- Dynamic execution steps -->
+                        </ul>
                     </div>
                 </div>
 

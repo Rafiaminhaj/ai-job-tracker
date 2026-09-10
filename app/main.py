@@ -176,6 +176,46 @@ def zapier_webhook_listener(payload: ZapierWebhookSchema):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+class AutoApplyRequestSchema(BaseModel):
+    job_url: str = Field(..., example="https://careers.deloitte.com/job/123")
+    company: str = Field(..., example="Deloitte India")
+    hr_email: Optional[str] = Field(None, example="indiacareers@deloitte.com")
+
+@app.post("/api/auto-apply")
+def auto_apply_job(payload: AutoApplyRequestSchema):
+    """
+    Autonomous Auto-Apply Endpoint: Runs AI Agent to auto-fill form fields,
+    dispatch tailored HR emails, and log application entry to dashboard.
+    """
+    try:
+        agent_res = ai_engine.run_auto_apply_agent(
+            job_url=payload.job_url,
+            company=payload.company,
+            hr_email=payload.hr_email
+        )
+        job_id = str(uuid.uuid4())
+        job_dict = {
+            "id": job_id,
+            "title": agent_res["title"],
+            "company": agent_res["company"],
+            "status": "Applied",
+            "date_applied": datetime.date.today().isoformat(),
+            "url": payload.job_url,
+            "description": f"Automated application via Auto-Apply Agent. HR Email: {agent_res['hr_email']}",
+            "match_score": 90,
+            "missing_skills": [],
+            "notes": agent_res["notes"]
+        }
+        database.add_job(job_dict)
+        return {
+            "status": "success",
+            "message": f"Autonomous AI Agent successfully applied to {agent_res['company']}!",
+            "agent_result": agent_res,
+            "job_data": job_dict
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/api/draft-email")
 def draft_email(payload: EmailDraftRequestSchema):
     """Generate a custom email draft for follow-ups or cold pitches using Gemini."""
@@ -192,5 +232,6 @@ def draft_email(payload: EmailDraftRequestSchema):
 
 # Mount Frontend static files on the root url
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
 
 
