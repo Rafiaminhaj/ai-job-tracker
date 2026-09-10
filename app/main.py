@@ -180,6 +180,7 @@ class AutoApplyRequestSchema(BaseModel):
     job_url: str = Field(..., example="https://careers.deloitte.com/job/123")
     company: str = Field(..., example="Deloitte India")
     hr_email: Optional[str] = Field(None, example="indiacareers@deloitte.com")
+    resume_url: Optional[str] = Field(None, example="https://rafiaminhaj.github.io/my-portfolio/Rafia_Minhaj_Resume.pdf")
 
 @app.post("/api/auto-apply")
 def auto_apply_job(payload: AutoApplyRequestSchema):
@@ -191,7 +192,8 @@ def auto_apply_job(payload: AutoApplyRequestSchema):
         agent_res = ai_engine.run_auto_apply_agent(
             job_url=payload.job_url,
             company=payload.company,
-            hr_email=payload.hr_email
+            hr_email=payload.hr_email,
+            resume_url=payload.resume_url
         )
         job_id = str(uuid.uuid4())
         job_dict = {

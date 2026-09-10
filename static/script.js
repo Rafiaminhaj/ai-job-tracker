@@ -264,6 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const company = document.getElementById("autoapply-company").value.trim();
             const url = document.getElementById("autoapply-url").value.trim();
             const hrEmail = document.getElementById("autoapply-hremail").value.trim();
+            const resumeUrl = document.getElementById("autoapply-resumeurl") ? document.getElementById("autoapply-resumeurl").value.trim() : "";
 
             if (!company || !url) {
                 showToast("Please enter Company Name and Target Job URL!", "error");
@@ -280,7 +281,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: JSON.stringify({
                         company: company,
                         job_url: url,
-                        hr_email: hrEmail ? hrEmail : null
+                        hr_email: hrEmail ? hrEmail : null,
+                        resume_url: resumeUrl ? resumeUrl : null
                     })
                 });
 

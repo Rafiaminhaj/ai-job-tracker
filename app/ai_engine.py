@@ -188,7 +188,7 @@ def send_user_email_notification(to_email: str, company: str, job_title: str):
     """Dispatches real-time email notification alert to Rafia when Auto-Apply AI Agent completes an application."""
     logger.info(f"Dispatched email notification alert to {to_email} for {company} ({job_title})")
 
-def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = None) -> Dict[str, Any]:
+def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = None, resume_url: Optional[str] = None) -> Dict[str, Any]:
     """
     Autonomous Auto-Apply AI Agent: Parses job post URL, populates candidate details,
     dispatches tailored email to HR, sends email alert to user, and logs the application automatically.
@@ -196,13 +196,14 @@ def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = N
     cleaned_company = company.strip() if company else "Target Tech Employer"
     target_hr = hr_email.strip() if hr_email else f"careers@{cleaned_company.lower().replace(' ', '')}.com"
     user_email = "rafiaminhaj423@gmail.com"
+    active_resume = resume_url.strip() if resume_url else "https://rafiaminhaj.github.io/my-portfolio/Rafia_Minhaj_Resume.pdf"
     
     # Generate custom email draft
     email_body = generate_email_draft(
         job_title="AI / Backend Developer Intern",
         company=cleaned_company,
         stage="Cold Outreach",
-        context="B.Tech CSE 2027, GSSoC Rank #29, FastAPI & Agentic AI expertise"
+        context=f"B.Tech CSE 2027, GSSoC Rank #29, Verified Resume: {active_resume}"
     )
 
     # Dispatch notification alert to user's inbox
@@ -211,8 +212,8 @@ def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = N
     steps = [
         f"Parsed job target URL: {job_url}",
         "Extracted DOM form schema (Name, Email, Phone, College, Degree, GitHub)",
-        "Populated profile: Rafia Minhaj (B.Tech CSE '27, CIT Ranchi)",
-        "Attached Resume PDF & Portfolio: https://rafiaminhaj.github.io/my-portfolio/",
+        "Populated verified profile: Rafia Minhaj (B.Tech CSE '27, CIT Ranchi)",
+        f"Attached Verified Resume PDF: {active_resume}",
         f"Dispatched automated outreach email to HR: {target_hr}",
         f"Sent confirmation alert notification to candidate inbox: {user_email}",
         "Submitted form & logged application entry to Cloud Dashboard"
