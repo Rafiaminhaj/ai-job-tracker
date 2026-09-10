@@ -261,11 +261,14 @@ from fastapi.responses import HTMLResponse
 static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
-@app.get("/", response_class=HTMLResponse)
-async def get_dashboard():
-    index_path = os.path.join(static_dir, "index.html")
-    with open(index_path, "r", encoding="utf-8") as f:
-        return f.read()
+from app.tuya_job_alert import TuyaJobDeskAlert
+
+@app.post("/webhook/tuya")
+def tuya_webhook_trigger(job_title: str = "Software Developer", company: str = "Tech Corp", match_score: int = 95):
+    """Trigger Tuya IoT Smart Desk LED indicator alert for high-match job opportunities."""
+    event = TuyaJobDeskAlert.trigger_job_alert({"title": job_title, "company": company, "match_score": match_score})
+    return {"status": "success", "tuya_iot_event": event}
+
 
 
 
