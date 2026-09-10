@@ -20,17 +20,17 @@ TARGET_HR_LIST = [
     },
     {
         "company": "Flipkart",
-        "hr_email": "campus@flipkart.com",
+        "hr_email": "careers@flipkart.com",
         "job_title": "SDE Intern"
     },
     {
         "company": "Amazon India",
-        "hr_email": "india-campus@amazon.com",
+        "hr_email": "careers@amazon.in",
         "job_title": "Software Development Engineer Intern"
     },
     {
         "company": "IBM India",
-        "hr_email": "careers@ibm.com",
+        "hr_email": "careers.in@ibm.com",
         "job_title": "Software Developer Intern"
     },
     {
