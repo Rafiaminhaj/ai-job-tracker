@@ -88,8 +88,28 @@ def get_all_jobs() -> List[Dict[str, Any]]:
     # SQLite fallback
     conn = get_sqlite_conn()
     cursor = conn.cursor()
+    cursor.execute("SELECT count(*) FROM jobs")
+    if cursor.fetchone()[0] == 0:
+        logger.info("Seeding initial job applications data into SQLite database...")
+        seed_items = [
+            ("job-1", "Python / FastAPI Developer", "Hireflux Talent Solutions", "Interviewing", "2026-09-10", "https://hireflux.in/job/1", "Remote Python Developer. Telephonic interview scheduled.", 95, "Docker,JUnit", "⚡ Interview Scheduled for 5 LPA Remote Role!"),
+            ("job-2", "Software Developer (Fresher Remote ₹45k/mo)", "Simpli Learn (Uniprep)", "Applied", "2026-09-10", "https://job.uniprep.ai/view/e8cb7876-943b-4376-b281-6e2b2231e5e4/1011", "Fresher Remote Role at Simpli Learn", 96, "", "Direct referral link from Nithesh B (Cutshort)"),
+            ("job-3", "Software Developer (Dubai Remote $3500/mo)", "D4 Insight (Uniprep)", "Applied", "2026-09-10", "https://job.uniprep.ai/view/f113717a-82e8-457b-83ad-c3ad7ab35f91/1011", "Remote Software Developer for D4 Insight Dubai", 88, "2+ YOE", "Direct referral link from Nithesh B (Cutshort)"),
+            ("job-4", "AI / Backend Developer Intern", "Qualcomm Bangalore", "Applied", "2026-09-10", "https://qualcomm.wd5.myworkdayjobs.com/Careers", "Autonomous AI Agent Auto-Applied", 92, "", "🤖 Auto-applied via Autonomous AI Agent"),
+            ("job-5", "AI / Backend Developer Intern", "Swiggy", "Applied", "2026-09-10", "https://careers.swiggy.com/jobs", "Autonomous AI Agent Auto-Applied", 90, "", "🤖 Auto-applied & Alerted rafiaminhaj423@gmail.com"),
+            ("job-6", "AI / Backend Developer Intern", "Flipkart", "Applied", "2026-09-10", "https://www.flipkartcareers.com/", "Autonomous AI Agent Auto-Applied", 89, "", "🤖 Auto-applied & Alerted rafiaminhaj423@gmail.com"),
+            ("job-7", "AI / Backend Developer Intern", "Amazon India", "Applied", "2026-09-10", "https://www.amazon.jobs/en/locations/bangalore-india", "Autonomous AI Agent Auto-Applied", 91, "", "🤖 Auto-applied & Alerted rafiaminhaj423@gmail.com"),
+            ("job-8", "AI / Backend Developer Intern Notification", "Deloitte India Careers", "Applied", "2026-09-10", "https://careers.deloitte.com/", "Zapier Webhook Ingested", 87, "", "⚡ Auto-logged via Zapier Webhook Automation")
+        ]
+        cursor.executemany("""
+            INSERT INTO jobs (id, title, company, status, date_applied, url, description, match_score, missing_skills, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, seed_items)
+        conn.commit()
+
     cursor.execute("SELECT * FROM jobs")
     rows = cursor.fetchall()
+
     jobs_list = []
     for row in rows:
         job = dict(row)

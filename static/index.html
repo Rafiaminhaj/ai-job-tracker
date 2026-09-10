@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <!-- Background glowing gradients -->
@@ -291,8 +291,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="autoapply-resumeurl">Your Verified Resume PDF / Drive Link (Optional)</label>
-                            <input type="url" id="autoapply-resumeurl" placeholder="https://rafiaminhaj.github.io/my-portfolio/Rafia_Minhaj_Resume.pdf">
+                            <label for="autoapply-resumeurl">Your Verified Resume PDF (Default Pre-filled)</label>
+                            <input type="url" id="autoapply-resumeurl" value="https://rafiaminhaj.github.io/my-portfolio/Rafia_Minhaj_Resume.pdf" placeholder="https://rafiaminhaj.github.io/my-portfolio/Rafia_Minhaj_Resume.pdf">
+                            <small style="color: #38bdf8; font-size: 11.5px; display: block; margin-top: 4px;">📄 Active Resume: Rafia Minhaj (B.Tech CSE '27, 8.32 CGPA, GSSoC #29, Java, Python, FastAPI)</small>
                         </div>
 
                         <button class="btn btn-primary btn-block" id="launch-agent-btn" style="background: linear-gradient(135deg, #0284c7, #38bdf8); border: none; margin-top: 10px;">
@@ -364,6 +365,7 @@
     <!-- Alert notifications -->
     <div class="notification-container" id="notification-container"></div>
 
-    <script src="script.js"></script>
+    <script src="/static/script.js"></script>
 </body>
 </html>
+
