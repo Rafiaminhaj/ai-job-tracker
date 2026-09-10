@@ -261,6 +261,20 @@ from fastapi.responses import HTMLResponse
 static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
+@app.get("/", response_class=HTMLResponse)
+async def get_dashboard():
+    paths_to_try = [
+        os.path.join(static_dir, "index.html"),
+        os.path.join(os.path.dirname(__file__), "..", "static", "index.html"),
+        os.path.join(os.getcwd(), "static", "index.html"),
+        "static/index.html"
+    ]
+    for p in paths_to_try:
+        if os.path.exists(p):
+            with open(p, "r", encoding="utf-8") as f:
+                return f.read()
+    return "<h1>CodeKitchen AI Job Tracker + Tuya IoT</h1><p>Dashboard active.</p>"
+
 from app.tuya_job_alert import TuyaJobDeskAlert
 
 @app.post("/webhook/tuya")
@@ -268,6 +282,7 @@ def tuya_webhook_trigger(job_title: str = "Software Developer", company: str = "
     """Trigger Tuya IoT Smart Desk LED indicator alert for high-match job opportunities."""
     event = TuyaJobDeskAlert.trigger_job_alert({"title": job_title, "company": company, "match_score": match_score})
     return {"status": "success", "tuya_iot_event": event}
+
 
 
 
