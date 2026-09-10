@@ -471,6 +471,18 @@ function renderAgentLog(result) {
         item.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #38bdf8;"></i> <span>${step}</span>`;
         list.appendChild(item);
     });
+
+    if (result.screenshot) {
+        const imgBlock = document.createElement("div");
+        imgBlock.style.marginTop = "15px";
+        imgBlock.innerHTML = `
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 6px;"><i class="fa-solid fa-camera"></i> 📸 Playwright Live Chromium Verification Screenshot:</p>
+            <a href="${result.screenshot}" target="_blank">
+                <img src="${result.screenshot}" alt="Playwright Verification Screenshot" style="width: 100%; border-radius: 10px; border: 1px solid var(--card-border); cursor: pointer;" />
+            </a>
+        `;
+        list.appendChild(imgBlock);
+    }
 }
 
 // Render Resume analysis results

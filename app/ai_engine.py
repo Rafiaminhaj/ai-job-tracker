@@ -190,15 +190,25 @@ def send_user_email_notification(to_email: str, company: str, job_title: str):
 
 def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = None, resume_url: Optional[str] = None) -> Dict[str, Any]:
     """
-    Autonomous Auto-Apply AI Agent: Parses job post URL, populates candidate details,
-    dispatches tailored email to HR, sends email alert to user, and logs the application automatically.
+    Autonomous Auto-Apply AI Agent: Uses Playwright Live Chromium Automation Engine to parse job post URL,
+    populate candidate details live in real browser, capture verification screenshot, and log application.
     """
+    from app.browser_automation import auto_fill_and_submit_job
+
     cleaned_company = company.strip() if company else "Target Tech Employer"
     target_hr = hr_email.strip() if hr_email else f"careers@{cleaned_company.lower().replace(' ', '')}.com"
     user_email = "rafiaminhaj423@gmail.com"
     active_resume = resume_url.strip() if resume_url else "https://rafiaminhaj.github.io/my-portfolio/Rafia_Minhaj_Resume.pdf"
     
-    # Generate custom email draft
+    # Run Playwright Live Browser Automation
+    automation_res = auto_fill_and_submit_job(
+        job_url=job_url,
+        company=cleaned_company,
+        hr_email=target_hr,
+        custom_resume_url=active_resume
+    )
+
+    # Generate custom outreach email draft
     email_body = generate_email_draft(
         job_title="AI / Backend Developer Intern",
         company=cleaned_company,
@@ -209,16 +219,6 @@ def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = N
     # Dispatch notification alert to user's inbox
     send_user_email_notification(user_email, cleaned_company, "AI / Backend Developer Intern")
 
-    steps = [
-        f"Parsed job target URL: {job_url}",
-        "Extracted DOM form schema (Name, Email, Phone, College, Degree, GitHub)",
-        "Populated verified profile: Rafia Minhaj (B.Tech CSE '27, CIT Ranchi)",
-        f"Attached Verified Resume PDF: {active_resume}",
-        f"Dispatched automated outreach email to HR: {target_hr}",
-        f"Sent confirmation alert notification to candidate inbox: {user_email}",
-        "Submitted form & logged application entry to Cloud Dashboard"
-    ]
-
     return {
         "title": "AI / Backend Developer Intern",
         "company": cleaned_company,
@@ -227,8 +227,9 @@ def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = N
         "email_body": email_body,
         "form_submitted": True,
         "email_dispatched": True,
-        "steps_completed": steps,
-        "notes": f"🤖 Auto-applied via Autonomous AI Agent & Alerted {user_email} ({datetime.date.today().isoformat()})"
+        "steps_completed": automation_res["steps_completed"],
+        "screenshot": automation_res.get("screenshot", ""),
+        "notes": f"🤖 Playwright Live AI Agent Applied ({datetime.date.today().isoformat()})"
     }
 
 def get_mock_email(job_title: str, company: str, stage: str) -> str:
