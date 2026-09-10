@@ -146,30 +146,24 @@ def generate_email_draft(job_title: str, company: str, stage: str, context: str)
 
 # Fallback Mock Generators
 def get_mock_analysis(job_description: str) -> Dict[str, Any]:
-    """Generates realistic mock data based on keywords in JD when Gemini is offline."""
+    """Generates realistic mock ATS analysis based on Rafia's top 0.8% developer skill set."""
     jd_lower = job_description.lower()
-    matching = ["Python"]
-    missing = ["Google Cloud Firestore"]
+    matching = ["Python", "FastAPI", "Java", "Spring Boot", "JUnit 5", "REST API Testing (Postman)", "SQL", "Git/GitHub", "Docker"]
+    missing = ["Cloud FinOps", "Enterprise Security Governance"]
     
-    if "fastapi" in jd_lower:
-        matching.append("FastAPI")
-    else:
-        missing.append("FastAPI")
-        
-    if "docker" in jd_lower or "kubernetes" in jd_lower:
-        missing.append("Docker")
-    else:
-        matching.append("Git")
-        
-    score = 75 if len(matching) >= 2 else 55
-    
+    if "selenium" in jd_lower:
+        matching.append("Selenium QA Automation")
+    if "postgres" in jd_lower or "sql" in jd_lower:
+        matching.append("PostgreSQL / SQL")
+
     return {
-        "match_score": score,
+        "match_score": 88,
         "matching_skills": matching,
         "missing_skills": missing,
         "tips": [
-            "Highlight python-based backend automation and API builds on your resume.",
-            "Add Firestore or document database projects under your technical skills section."
+            "Highlight your GSSoC 2026 Rank #29 and 8.32 CGPA prominently at the top of your resume.",
+            "Emphasize your JUnit 5 concurrency testing (1000+ payment events, 90%+ test coverage) under projects.",
+            "Mention your FastAPI & Gemini AI Agent Webhook CRM experience for backend & testing roles."
         ]
     }
 
