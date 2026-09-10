@@ -27,7 +27,8 @@ except Exception as e:
 # local SQLite setup if Firestore is offline/local
 if use_local_sqlite:
     import sqlite3
-    SQLITE_DB_PATH = "jobs.db"
+    SQLITE_DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "jobs.db")
+
     
     def get_sqlite_conn():
         conn = sqlite3.connect(SQLITE_DB_PATH)

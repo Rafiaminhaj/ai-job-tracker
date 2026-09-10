@@ -27,51 +27,46 @@ app.add_middleware(
 # Resume Template representing Rafia's premium developer profile (used as default)
 DEFAULT_RESUME = """
 RAFIA MINHAJ
-Phone: +91-6206675008 | Email: rafiaminhaj423@gmail.com
+Phone: +91-62066-75008 | Email: rafiaminhaj423@gmail.com
 LinkedIn: linkedin.com/in/rafia-minhaj | GitHub: github.com/Rafiaminhaj
 
 PROFESSIONAL SUMMARY
-Final-year Computer Science student with a strong foundation in Software Testing Life Cycle (STLC) and hands-on experience in 
-automated unit, integration, and API testing (JUnit, Mockito, Postman). Built production-style REST APIs and validated them 
-under high concurrency (1000+ simulated events), achieving 90%+ test coverage. Comfortable with Java, Python, SQL, and Git-based 
-collaborative workflows, with working exposure to CI/CD pipelines. GirlScript Summer of Code 2026 Global Rank #29 (Top 0.8%). 
-Eager to build on this foundation with enterprise-grade automation tools such as Selenium in a structured QA / Software Engineering environment.
+Full Stack Developer intern candidate with hands-on experience building end-to-end applications using Java, Spring Boot, React.js, and Python. Built production-style REST APIs, responsive front-end interfaces, and CI/CD pipelines. Ranked #29 globally (Top 0.8%) in GirlScript Summer of Code 2026. Comfortable across the stack -- from database design to UI -- with strong fundamentals in OOP and concurrent systems.
 
 EDUCATION
-Cambridge Institute of Technology (CIT), Ranchi, Jharkhand
+Cambridge Institute of Technology, Ranchi, Jharkhand
 Bachelor of Technology in Computer Science & Engineering | CGPA: 8.32/10.0 (Aug 2023 - May 2027)
-- Coursework: Data Structures & Algorithms, DBMS, Operating Systems, Software Engineering, Object-Oriented Design.
-- Focus: Backend Engineering & QA Automation; ranked in top tier of CSE batch.
+- Coursework: Data Structures & Algorithms, Database Management Systems (DBMS), Operating Systems, Software Engineering, Object-Oriented Design.
+- Focus: Full Stack Development and Cloud Architectures; ranked in the top tier of the CSE batch.
 
 TECHNICAL SKILLS
-- Testing & QA: JUnit 5, Mockito, Unit & Integration Testing, REST API Testing (Postman), Selenium, Test Coverage Analysis
-- Languages: Java, Python, JavaScript (ES6+), SQL
-- Frameworks & Libraries: Spring Boot, FastAPI, Django, Node.js, Express
-- Databases: PostgreSQL, MySQL, SQLite, MongoDB
-- DevOps & CI/CD: Docker, GitHub Actions (CI/CD pipelines), Kubernetes, Google Cloud Run
-- Methodologies: Agile fundamentals, SDLC, STLC
+- Frontend: React.js, JavaScript (ES6+), HTML5, CSS3, Vite
+- Backend: Java, Spring Boot, Python, FastAPI, Django, Node.js, Express
+- Databases & Cloud: PostgreSQL, MySQL, SQLite, Google Cloud (Cloud Run, Firestore), Firebase, Microsoft Azure
+- Tools & DevOps: Git, GitHub, Docker, Kubernetes, Postman, Vercel CLI, npm
+- Core CS Concepts: Data Structures & Algorithms, OOP, REST and GraphQL APIs, Concurrent Programming, WebSockets
 
 PROFESSIONAL EXPERIENCE
 - GeeksforGeeks - Campus Mantri (Official Representative) (Jan 2026 - Present)
-  Liaison between GeeksforGeeks and 500+ student developer community at CIT Ranchi; organized 5+ workshops & coding contests.
+  Served as the liaison between GeeksforGeeks and a developer community of 500+ students at CIT Ranchi; organized 5+ coding competitions & workshops.
 - Elite Coders ECWOC - Open Source Contributor | GSSoC 2026 (Jan 2026 - Present)
-  Resolved 12+ GitHub issues across 3+ codebases; achieved GSSoC 2026 Global Rank #29 (Top 0.8%).
+  Contributed to 3+ distributed open-source codebases, resolving 12+ GitHub issues; achieved GSSoC 2026 Global Rank #29 (Top 0.8%).
 
 PROJECTS
-1. CodeKitchen AI Job Tracker & Autonomous Agent (FastAPI, Python, Playwright, Gemini Vision AI)
-   Built end-to-end job tracker with multimodal poster parsing, Zapier webhooks, and live browser automation.
-2. Concurrent Spring Wallet API (Java, Spring Boot, PostgreSQL, JUnit 5, Mockito)
-   Built automated test suite simulating 1000+ concurrent payment events, achieving 90%+ test coverage.
-3. Cloud-Native GitOps CI/CD Pipeline (FastAPI, Docker, GitHub Actions, Pytest)
-   Configured automated CI pipeline on Google Cloud Run with Pytest test suites on every commit.
-4. WhatsApp AI LeadAgent & CRM (Python, FastAPI, Gemini, SQLite)
-   API-tested 10+ endpoints with 95% request/response contract validation accuracy.
+1. WhatsApp AI LeadAgent & CRM (Python, FastAPI, Gemini, Streamlit) [Aug 2026]
+   Engineered full-stack lead generation CRM with Gemini intent classification (95% accuracy) & offline Twilio simulation.
+2. Concurrent Spring Wallet API (Java, Spring Boot, PostgreSQL, JUnit 5, Mockito) [Jul 2026]
+   Architected transactional payment API, stress-tested with multithreaded JUnit tests (1000+ concurrent events, 90%+ test coverage).
+3. Cloud-Native GitOps CI/CD Pipeline (FastAPI, Docker, GitHub Actions, Cloud Run) [Aug 2026]
+   Built cloud-native REST API with end-to-end GitOps CI/CD pipeline deploying Docker containers to Google Cloud Run.
+4. CodeKitchen AI Job Tracker (Python, FastAPI, Gemini, Zapier, Firestore) [Sep 2026]
+   Built Webhook Ingestion Engine (/api/webhook/zapier) processing real-time Zapier triggers & Gemini ATS Match Optimizer.
 
 ACHIEVEMENTS & CERTIFICATIONS
 - GirlScript Summer of Code (GSSoC 2026): Global Rank #29 (Top 0.8%) out of thousands of participants.
 - Cloud Credentials: 36+ Microsoft Learn Badges covering advanced Azure Cloud Architectures.
 - Certifications: McKinsey Forward Program; Google Cloud Intro to Generative AI.
-- AI Launchpad (Interview Kickstart, Aug 2026): Hands-on training in AI agent & multi-agent system architectures.
+- Algorithmic Practice: Solves DSA & SQL daily on HackerRank.
 """
 
 # Pydantic Schemas for validation
@@ -260,7 +255,9 @@ def draft_email(payload: EmailDraftRequestSchema):
         raise HTTPException(status_code=500, detail=str(e))
 
 # Mount Frontend static files on the root url
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
+app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
+
 
 
 
