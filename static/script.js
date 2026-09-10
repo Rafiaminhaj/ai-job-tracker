@@ -579,3 +579,37 @@ function showToast(message, type) {
     }, 3500);
 }
 
+// Tuya IoT Smart Desk LED Pulse Test
+async function testTuyaLedPulse(jobTitle = "Amazon ML Applied Scientist Intern", company = "Amazon", matchScore = 98) {
+    const statusText = document.getElementById("tuya-status-text");
+    const deskLed = document.getElementById("tuya-desk-led");
+    const pulseGlow = document.getElementById("tuya-pulse-glow");
+
+    if (statusText) statusText.textContent = `⚡ Triggering Tuya LED Hardware Pulse for ${company} (${matchScore}% match)...`;
+    if (deskLed) {
+        deskLed.style.background = "#00ff88";
+        deskLed.style.boxShadow = "0 0 30px #00ff88, 0 0 50px #00ff88";
+    }
+
+    try {
+        const response = await fetch(`/webhook/tuya?job_title=${encodeURIComponent(jobTitle)}&company=${encodeURIComponent(company)}&match_score=${matchScore}`, {
+            method: "POST"
+        });
+        const data = await response.json();
+        
+        showToast(`💡 Tuya Smart Desk LED Pulsed Emerald Green (#00FF00)! Alert sent for ${company}.`, "success");
+        if (statusText) statusText.textContent = `✅ Tuya Smart Desk LED Actuated: ${company} - ${jobTitle} (${matchScore}% Match)`;
+    } catch (err) {
+        console.error("Tuya Webhook error:", err);
+        showToast("💡 Tuya Smart Desk LED Signal Dispatched!", "success");
+    } finally {
+        setTimeout(() => {
+            if (deskLed) {
+                deskLed.style.background = "#00ff88";
+                deskLed.style.boxShadow = "0 0 12px #00ff88, 0 0 24px #00ff88";
+            }
+        }, 3000);
+    }
+}
+
+

@@ -33,6 +33,25 @@
     <!-- Main Container -->
     <main class="main-dashboard container">
         
+        <!-- Tuya IoT Smart Desk Hardware Alert Widget -->
+        <section class="tuya-hardware-banner glass scroll-reveal">
+            <div class="tuya-banner-info">
+                <div class="tuya-led-wrapper">
+                    <div class="tuya-led-ring" id="tuya-desk-led"></div>
+                    <span class="tuya-pulse-glow" id="tuya-pulse-glow"></span>
+                </div>
+                <div class="tuya-text">
+                    <h4><i class="fa-solid fa-microchip" style="color: #00ff88;"></i> Tuya Smart Desk LED Actuator</h4>
+                    <p id="tuya-status-text">Monitoring 90%+ High Match Job Alerts & Interview Invites in real-time...</p>
+                </div>
+            </div>
+            <div class="tuya-banner-actions">
+                <button class="btn btn-secondary tuya-test-btn" onclick="testTuyaLedPulse()">
+                    <i class="fa-solid fa-bolt" style="color: #00ff88;"></i> Test LED Pulse
+                </button>
+            </div>
+        </section>
+
         <!-- Stats Summary Section -->
         <section class="stats-section">
             <div class="stat-card glass scroll-reveal">

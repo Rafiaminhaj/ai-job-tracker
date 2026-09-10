@@ -847,3 +847,88 @@ textarea {
     text-overflow: ellipsis;
 }
 
+/* Tuya IoT Hardware Banner Styles */
+.tuya-hardware-banner {
+    margin-bottom: 25px;
+    padding: 16px 24px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(16, 24, 40, 0.8), rgba(15, 23, 42, 0.9));
+    border: 1px solid rgba(0, 255, 136, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 255, 136, 0.08);
+}
+
+.tuya-banner-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.tuya-led-wrapper {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tuya-led-ring {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #00ff88;
+    box-shadow: 0 0 12px #00ff88, 0 0 24px #00ff88;
+    transition: all 0.3s ease;
+}
+
+.tuya-pulse-glow {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid #00ff88;
+    animation: tuyaPulse 2s infinite ease-in-out;
+}
+
+@keyframes tuyaPulse {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    50% { transform: scale(1.4); opacity: 0.2; }
+    100% { transform: scale(0.8); opacity: 0.8; }
+}
+
+.tuya-text h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tuya-text p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.tuya-test-btn {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    color: #00ff88;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tuya-test-btn:hover {
+    background: rgba(0, 255, 136, 0.25);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+}
+
+
