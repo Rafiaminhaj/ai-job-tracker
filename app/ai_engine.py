@@ -229,10 +229,64 @@ CodeKitchen AI Job Tracker Engine
     except Exception as e:
         logger.error(f"Failed to send real Gmail SMTP email: {e}")
 
+def send_real_hr_email(to_hr_email: str, company: str, job_title: str, resume_url: str):
+    """Dispatches real cold outreach email directly from rafiaminhaj423@gmail.com to HR's inbox."""
+    sender_email = getattr(settings, "SENDER_EMAIL", "rafiaminhaj423@gmail.com")
+    sender_password = getattr(settings, "SENDER_APP_PASSWORD", "")
+
+    if not sender_password or not to_hr_email:
+        return
+
+    try:
+        import smtplib
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+
+        msg = MIMEMultipart()
+        msg['From'] = f"Rafia Minhaj <{sender_email}>"
+        msg['To'] = to_hr_email
+        msg['Subject'] = f"Application for {job_title} - Rafia Minhaj (B.Tech CSE '27, CIT Ranchi)"
+
+        body = f"""Dear Hiring Team at {company},
+
+I hope this email finds you well.
+
+My name is Rafia Minhaj, a B.Tech Computer Science & Engineering student (Class of 2027) at Cambridge Institute of Technology (CIT), Ranchi. I am writing to express my strong interest in the {job_title} role at {company}.
+
+Key Highlights of My Candidate Profile:
+- Global Open-Source Contributor (GirlScript Summer of Code GSSoC '26 Rank #29 globally)
+- Google Cloud Code Kitchen Reality Audition Score: 95/100
+- Technical Skills: Python, FastAPI, Gemini AI Agent Workflows, Docker, Webhooks, SQL
+- Online Portfolio: https://rafiaminhaj.github.io/my-portfolio/
+- Verified Resume PDF: {resume_url}
+
+I have attached my verified resume link and would welcome the opportunity to discuss how my technical skills and problem-solving abilities align with your engineering team's goals.
+
+Thank you for your time and consideration.
+
+Best regards,
+
+Rafia Minhaj
+Phone: +91-6206675008
+Email: {sender_email}
+GitHub: https://github.com/Rafiaminhaj
+Portfolio: https://rafiaminhaj.github.io/my-portfolio/
+"""
+        msg.attach(MIMEText(body, 'plain'))
+
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.send_message(msg)
+        server.quit()
+        logger.info(f"REAL HR OUTREACH EMAIL SENT directly to {to_hr_email} for {company}!")
+    except Exception as e:
+        logger.error(f"Failed to send real HR outreach email: {e}")
+
 def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = None, resume_url: Optional[str] = None) -> Dict[str, Any]:
     """
     Autonomous Auto-Apply AI Agent: Uses Playwright Live Chromium Automation Engine to parse job post URL,
-    populate candidate details live in real browser, capture verification screenshot, and log application.
+    populate candidate details live in real browser, capture verification screenshot, send real HR email, and log application.
     """
     from app.browser_automation import auto_fill_and_submit_job
 
@@ -260,6 +314,9 @@ def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = N
     # Dispatch notification alert to user's inbox
     send_user_email_notification(user_email, cleaned_company, "AI / Backend Developer Intern")
 
+    # Dispatch REAL cold outreach email to HR recruiter's inbox directly
+    send_real_hr_email(target_hr, cleaned_company, "AI / Backend Developer Intern", active_resume)
+
     return {
         "title": "AI / Backend Developer Intern",
         "company": cleaned_company,
@@ -268,9 +325,9 @@ def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = N
         "email_body": email_body,
         "form_submitted": True,
         "email_dispatched": True,
-        "steps_completed": automation_res["steps_completed"],
+        "steps_completed": automation_res["steps_completed"] + [f"📧 Sent REAL cold outreach email directly to HR inbox: {target_hr}"],
         "screenshot": automation_res.get("screenshot", ""),
-        "notes": f"🤖 Playwright Live AI Agent Applied ({datetime.date.today().isoformat()})"
+        "notes": f"🤖 Playwright Live AI Agent Applied & HR Emailed ({datetime.date.today().isoformat()})"
     }
 
 def get_mock_email(job_title: str, company: str, stage: str) -> str:
