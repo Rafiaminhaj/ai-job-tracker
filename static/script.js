@@ -6,6 +6,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load initial jobs
     fetchJobs();
 
+    // Tab buttons event listener binding for 100% reliability
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            const tabName = btn.getAttribute("data-tab");
+            if (tabName) {
+                switchTab(tabName);
+            }
+        });
+    });
+
     // Event Listeners for Modal
     const openModalBtn = document.getElementById("open-modal-btn");
     const closeModalBtn = document.getElementById("close-modal-btn");
@@ -431,11 +441,12 @@ function switchTab(tabName) {
     }
 
     // Activate matching button
-    const targetBtn = document.querySelector(`[onclick*="${tabName}"]`) || document.querySelector(`[data-tab="${tabName}"]`);
+    const targetBtn = document.querySelector(`[data-tab="${tabName}"]`) || document.querySelector(`[onclick*="${tabName}"]`);
     if (targetBtn) {
         targetBtn.classList.add("active");
     }
 }
+window.switchTab = switchTab;
 
 // Render Agent execution step logs
 function renderAgentLog(result) {
