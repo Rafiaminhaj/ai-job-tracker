@@ -139,6 +139,43 @@ async def scan_job_poster(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+class ZapierWebhookSchema(BaseModel):
+    title: Optional[str] = Field("Software Engineer Role", example="SDE Intern Position")
+    company: Optional[str] = Field("Deloitte / Amazon", example="Deloitte Careers")
+    status: Optional[str] = Field("Applied", example="Applied")
+    description: Optional[str] = Field("", example="Incoming email job notification")
+    notes: Optional[str] = Field("Auto-logged via Zapier Webhook Automation", example="Zapier Gmail Trigger")
+
+@app.post("/api/webhook/zapier")
+def zapier_webhook_listener(payload: ZapierWebhookSchema):
+    """
+    Zapier Automation Webhook Endpoint: Receives automated job application triggers
+    from Zapier when emails arrive from Deloitte, Amazon, LinkedIn, or Juspay.
+    """
+    try:
+        job_id = str(uuid.uuid4())
+        job_dict = {
+            "id": job_id,
+            "title": payload.title or "Software Developer Role",
+            "company": payload.company or "Automated Hiring Alert",
+            "status": payload.status or "Applied",
+            "date_applied": datetime.date.today().isoformat(),
+            "url": "https://zapier.com/app/zaps",
+            "description": payload.description or "Logged via Zapier Gmail Webhook Integration",
+            "match_score": 85,
+            "missing_skills": [],
+            "notes": payload.notes or "⚡ Auto-logged via Zapier Webhook Automation"
+        }
+        database.add_job(job_dict)
+        return {
+            "status": "success",
+            "message": "Zapier Webhook processed & application logged to Cloud Dashboard!",
+            "id": job_id,
+            "data": job_dict
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/api/draft-email")
 def draft_email(payload: EmailDraftRequestSchema):
     """Generate a custom email draft for follow-ups or cold pitches using Gemini."""
@@ -155,4 +192,5 @@ def draft_email(payload: EmailDraftRequestSchema):
 
 # Mount Frontend static files on the root url
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
+
 

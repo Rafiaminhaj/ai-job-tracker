@@ -9,10 +9,11 @@ An automated career optimization pipeline and job application dashboard built wi
 ## ⚡ Key Features
 
 1. **Astra Multimodal Vision AI Scanner:** Project Astra-inspired scanner using Gemini Vision to parse handwritten job posters, screenshots, and hiring flyers to auto-extract Job Title, Company, Required Skills, and Compensation.
-2. **Firestore Database Integration:** Deploys as a native serverless backend storing jobs inside document collections on Google Cloud Firestore, with an automatic local SQLite fallback for local-first testing.
-3. **Vertex AI Resume Analyzer:** Leverages Gemini to run semantic analysis against a candidate's resume, calculate an ATS match score, extract missing keywords, and suggest optimizations.
-4. **AI Follow-up & Cold Mailer:** Instantly drafts tailored cold pitches and follow-up templates based on the specific job description and application stage.
-5. **Premium Glassmorphic Interface:** A fast, responsive, and gorgeous dark-mode dashboard with real-time stats and visual funnel trackers.
+2. **Zapier Webhook & Gmail Automation:** RESTful Webhook listener (`POST /api/webhook/zapier`) that integrates with Zapier triggers to automatically ingest, parse, and log incoming job application emails from Deloitte, Amazon, and LinkedIn.
+3. **Firestore Database Integration:** Deploys as a native serverless backend storing jobs inside document collections on Google Cloud Firestore, with an automatic local SQLite fallback for local-first testing.
+4. **Vertex AI Resume Analyzer:** Leverages Gemini to run semantic analysis against a candidate's resume, calculate an ATS match score, extract missing keywords, and suggest optimizations.
+5. **AI Follow-up & Cold Mailer:** Instantly drafts tailored cold pitches and follow-up templates based on the specific job description and application stage.
+6. **Premium Glassmorphic Interface:** A fast, responsive, and gorgeous dark-mode dashboard with real-time stats and visual funnel trackers.
 
 ---
 
