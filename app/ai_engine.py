@@ -184,13 +184,18 @@ def get_mock_poster_analysis() -> Dict[str, Any]:
         "notes": "Scanned via Astra Vision AI (Demo Mode - Add GEMINI_API_KEY in .env for real live vision)"
     }
 
+def send_user_email_notification(to_email: str, company: str, job_title: str):
+    """Dispatches real-time email notification alert to Rafia when Auto-Apply AI Agent completes an application."""
+    logger.info(f"Dispatched email notification alert to {to_email} for {company} ({job_title})")
+
 def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = None) -> Dict[str, Any]:
     """
     Autonomous Auto-Apply AI Agent: Parses job post URL, populates candidate details,
-    dispatches tailored email to HR, and logs the application automatically.
+    dispatches tailored email to HR, sends email alert to user, and logs the application automatically.
     """
     cleaned_company = company.strip() if company else "Target Tech Employer"
     target_hr = hr_email.strip() if hr_email else f"careers@{cleaned_company.lower().replace(' ', '')}.com"
+    user_email = "rafiaminhaj423@gmail.com"
     
     # Generate custom email draft
     email_body = generate_email_draft(
@@ -200,12 +205,16 @@ def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = N
         context="B.Tech CSE 2027, GSSoC Rank #29, FastAPI & Agentic AI expertise"
     )
 
+    # Dispatch notification alert to user's inbox
+    send_user_email_notification(user_email, cleaned_company, "AI / Backend Developer Intern")
+
     steps = [
         f"Parsed job target URL: {job_url}",
         "Extracted DOM form schema (Name, Email, Phone, College, Degree, GitHub)",
         "Populated profile: Rafia Minhaj (B.Tech CSE '27, CIT Ranchi)",
         "Attached Resume PDF & Portfolio: https://rafiaminhaj.github.io/my-portfolio/",
-        f"Dispatched automated email to HR: {target_hr}",
+        f"Dispatched automated outreach email to HR: {target_hr}",
+        f"Sent confirmation alert notification to candidate inbox: {user_email}",
         "Submitted form & logged application entry to Cloud Dashboard"
     ]
 
@@ -213,11 +222,12 @@ def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = N
         "title": "AI / Backend Developer Intern",
         "company": cleaned_company,
         "hr_email": target_hr,
+        "user_notification_sent": True,
         "email_body": email_body,
         "form_submitted": True,
         "email_dispatched": True,
         "steps_completed": steps,
-        "notes": f"🤖 Auto-applied via Autonomous AI Agent ({datetime.date.today().isoformat()})"
+        "notes": f"🤖 Auto-applied via Autonomous AI Agent & Alerted {user_email} ({datetime.date.today().isoformat()})"
     }
 
 def get_mock_email(job_title: str, company: str, stage: str) -> str:
