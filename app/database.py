@@ -1,5 +1,6 @@
 import os
 import logging
+import shutil
 from typing import List, Dict, Any
 from app.config import settings
 
@@ -7,53 +8,67 @@ from app.config import settings
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Try to initialize Firestore
-db = None
-use_local_sqlite = False
+# Determine SQLite DB Path for Vercel / Serverless Environments
+is_vercel = bool(os.environ.get("VERCEL"))
+root_db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "jobs.db")
 
-try:
-    from google.cloud import firestore
-    # If project ID is provided and credentials or local mock is bypassed
-    if settings.FIRESTORE_PROJECT_ID:
-        db = firestore.Client(project=settings.FIRESTORE_PROJECT_ID)
-        # Test connection/client creation
-        logger.info(f"Initialized Google Cloud Firestore client for project: {settings.FIRESTORE_PROJECT_ID}")
-    else:
-        raise ValueError("Firestore Project ID not specified.")
-except Exception as e:
-    logger.warning(f"Could not initialize Cloud Firestore ({e}). Falling back to local SQLite database.")
+if is_vercel:
+    SQLITE_DB_PATH = "/tmp/jobs.db"
     use_local_sqlite = True
+    # Seed /tmp/jobs.db from root jobs.db if not present
+    if not os.path.exists(SQLITE_DB_PATH) and os.path.exists(root_db_path):
+        try:
+            shutil.copy(root_db_path, SQLITE_DB_PATH)
+            logger.info("Copied root jobs.db to /tmp/jobs.db for Vercel execution.")
+        except Exception as e:
+            logger.warning(f"Could not copy seed jobs.db to /tmp: {e}")
+else:
+    SQLITE_DB_PATH = root_db_path
+    use_local_sqlite = False
 
-# local SQLite setup if Firestore is offline/local
+db = None
+if not is_vercel:
+    try:
+        from google.cloud import firestore
+        if settings.FIRESTORE_PROJECT_ID and os.getenv("GOOGLE_APPLICATION_CREDENTIALS"):
+            db = firestore.Client(project=settings.FIRESTORE_PROJECT_ID)
+            logger.info(f"Initialized Google Cloud Firestore client for project: {settings.FIRESTORE_PROJECT_ID}")
+        else:
+            use_local_sqlite = True
+    except Exception as e:
+        logger.warning(f"Could not initialize Cloud Firestore ({e}). Falling back to local SQLite database.")
+        use_local_sqlite = True
+
+# Ensure SQLite setup
 if use_local_sqlite:
     import sqlite3
-    SQLITE_DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "jobs.db")
-
     
     def get_sqlite_conn():
         conn = sqlite3.connect(SQLITE_DB_PATH)
         conn.row_factory = sqlite3.Row
         return conn
         
-    # Create tables if they don't exist
-    conn = get_sqlite_conn()
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS jobs (
-            id TEXT PRIMARY KEY,
-            title TEXT,
-            company TEXT,
-            status TEXT,
-            date_applied TEXT,
-            url TEXT,
-            description TEXT,
-            match_score INTEGER,
-            missing_skills TEXT,
-            notes TEXT
-        )
-    """)
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_sqlite_conn()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS jobs (
+                id TEXT PRIMARY KEY,
+                title TEXT,
+                company TEXT,
+                status TEXT,
+                date_applied TEXT,
+                url TEXT,
+                description TEXT,
+                match_score INTEGER,
+                missing_skills TEXT,
+                notes TEXT
+            )
+        """)
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        logger.warning(f"SQLite table check notice: {e}")
 
 # Interface Functions for Database
 def get_all_jobs() -> List[Dict[str, Any]]:
@@ -78,7 +93,6 @@ def get_all_jobs() -> List[Dict[str, Any]]:
     jobs_list = []
     for row in rows:
         job = dict(row)
-        # deserialize list
         if job.get("missing_skills"):
             job["missing_skills"] = job["missing_skills"].split(",")
         else:
@@ -130,7 +144,6 @@ def update_job_status(job_id: str, status: str) -> bool:
         except Exception as e:
             logger.error(f"Firestore update error: {e}. Falling back to SQLite.")
             
-    # SQLite fallback
     conn = get_sqlite_conn()
     cursor = conn.cursor()
     cursor.execute("UPDATE jobs SET status = ? WHERE id = ?", (status, job_id))
@@ -148,7 +161,6 @@ def delete_job(job_id: str) -> bool:
         except Exception as e:
             logger.error(f"Firestore delete error: {e}. Falling back to SQLite.")
             
-    # SQLite fallback
     conn = get_sqlite_conn()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM jobs WHERE id = ?", (job_id,))
