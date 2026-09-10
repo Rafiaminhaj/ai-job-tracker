@@ -256,9 +256,17 @@ def draft_email(payload: EmailDraftRequestSchema):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# Mount Frontend static files on the root url
+from fastapi.responses import HTMLResponse
+
 static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
-app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def get_dashboard():
+    index_path = os.path.join(static_dir, "index.html")
+    with open(index_path, "r", encoding="utf-8") as f:
+        return f.read()
+
 
 
 
