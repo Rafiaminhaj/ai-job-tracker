@@ -1,15 +1,18 @@
 # ☁️ AI Job Application Tracker
 
+![CodeKitchen AI Job Tracker Banner](static/banner.png)
+
 An automated career optimization pipeline and job application dashboard built with **Python, FastAPI, Google Cloud Firestore, and Vertex AI (Gemini 1.5 Flash)**. Created for the **Google Cloud Code Kitchen** reality series auditions.
 
 ---
 
 ## ⚡ Key Features
 
-1. **Firestore Database Integration:** Deploys as a native serverless backend storing jobs inside document collections on Google Cloud Firestore, with an automatic local SQLite fallback for local-first testing.
-2. **Vertex AI Resume Analyzer:** Leverages Gemini to run semantic analysis against a candidate's resume, calculate an ATS match score, extract missing keywords, and suggest optimizations.
-3. **AI Follow-up & Cold Mailer:** Instantly drafts tailored cold pitches and follow-up templates based on the specific job description and application stage.
-4. **Premium Glassmorphic Interface:** A fast, responsive, and gorgeous dark-mode dashboard with real-time stats and visual funnel trackers.
+1. **Astra Multimodal Vision AI Scanner:** Project Astra-inspired scanner using Gemini Vision to parse handwritten job posters, screenshots, and hiring flyers to auto-extract Job Title, Company, Required Skills, and Compensation.
+2. **Firestore Database Integration:** Deploys as a native serverless backend storing jobs inside document collections on Google Cloud Firestore, with an automatic local SQLite fallback for local-first testing.
+3. **Vertex AI Resume Analyzer:** Leverages Gemini to run semantic analysis against a candidate's resume, calculate an ATS match score, extract missing keywords, and suggest optimizations.
+4. **AI Follow-up & Cold Mailer:** Instantly drafts tailored cold pitches and follow-up templates based on the specific job description and application stage.
+5. **Premium Glassmorphic Interface:** A fast, responsive, and gorgeous dark-mode dashboard with real-time stats and visual funnel trackers.
 
 ---
 
