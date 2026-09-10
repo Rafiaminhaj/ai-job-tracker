@@ -27,24 +27,51 @@ app.add_middleware(
 # Resume Template representing Rafia's premium developer profile (used as default)
 DEFAULT_RESUME = """
 RAFIA MINHAJ
-Email: rafiaminhaj423@gmail.com | Phone: +91-6206675008
-GitHub: github.com/Rafiaminhaj | Portfolio: rafiaminhaj.github.io/my-portfolio/
+Phone: +91-6206675008 | Email: rafiaminhaj423@gmail.com
+LinkedIn: linkedin.com/in/rafia-minhaj | GitHub: github.com/Rafiaminhaj
 
-EDUCATION:
-- B.Tech in Computer Science & Engineering (Class of 2027)
-  Cambridge Institute of Technology (CIT), Ranchi.
+PROFESSIONAL SUMMARY
+Final-year Computer Science student with a strong foundation in Software Testing Life Cycle (STLC) and hands-on experience in 
+automated unit, integration, and API testing (JUnit, Mockito, Postman). Built production-style REST APIs and validated them 
+under high concurrency (1000+ simulated events), achieving 90%+ test coverage. Comfortable with Java, Python, SQL, and Git-based 
+collaborative workflows, with working exposure to CI/CD pipelines. GirlScript Summer of Code 2026 Global Rank #29 (Top 0.8%). 
+Eager to build on this foundation with enterprise-grade automation tools such as Selenium in a structured QA / Software Engineering environment.
 
-TECHNICAL SKILLS:
-- Languages: Python, Java, JavaScript, HTML, CSS, SQL.
-- Frameworks & Tools: FastAPI, Spring Boot, Git, GitHub, Docker, Prometheus, Grafana.
-- Databases: SQLite, H2 Database, Firestore, PostgreSQL.
-- Specializations: AI Agent Workflows, Backend API Development, CI/CD GitOps.
+EDUCATION
+Cambridge Institute of Technology (CIT), Ranchi, Jharkhand
+Bachelor of Technology in Computer Science & Engineering | CGPA: 8.32/10.0 (Aug 2023 - May 2027)
+- Coursework: Data Structures & Algorithms, DBMS, Operating Systems, Software Engineering, Object-Oriented Design.
+- Focus: Backend Engineering & QA Automation; ranked in top tier of CSE batch.
 
-EXPERIENCE:
-- AI Developer Intern at InAmigos (July 2026 - Present)
-  Building AI-enabled conversational bots and agent workflows.
-- GirlScript Summer of Code (GSSoC '26) Contributor
-  Globally Ranked #547 (Top 2% of contributors) in open-source projects.
+TECHNICAL SKILLS
+- Testing & QA: JUnit 5, Mockito, Unit & Integration Testing, REST API Testing (Postman), Selenium, Test Coverage Analysis
+- Languages: Java, Python, JavaScript (ES6+), SQL
+- Frameworks & Libraries: Spring Boot, FastAPI, Django, Node.js, Express
+- Databases: PostgreSQL, MySQL, SQLite, MongoDB
+- DevOps & CI/CD: Docker, GitHub Actions (CI/CD pipelines), Kubernetes, Google Cloud Run
+- Methodologies: Agile fundamentals, SDLC, STLC
+
+PROFESSIONAL EXPERIENCE
+- GeeksforGeeks - Campus Mantri (Official Representative) (Jan 2026 - Present)
+  Liaison between GeeksforGeeks and 500+ student developer community at CIT Ranchi; organized 5+ workshops & coding contests.
+- Elite Coders ECWOC - Open Source Contributor | GSSoC 2026 (Jan 2026 - Present)
+  Resolved 12+ GitHub issues across 3+ codebases; achieved GSSoC 2026 Global Rank #29 (Top 0.8%).
+
+PROJECTS
+1. CodeKitchen AI Job Tracker & Autonomous Agent (FastAPI, Python, Playwright, Gemini Vision AI)
+   Built end-to-end job tracker with multimodal poster parsing, Zapier webhooks, and live browser automation.
+2. Concurrent Spring Wallet API (Java, Spring Boot, PostgreSQL, JUnit 5, Mockito)
+   Built automated test suite simulating 1000+ concurrent payment events, achieving 90%+ test coverage.
+3. Cloud-Native GitOps CI/CD Pipeline (FastAPI, Docker, GitHub Actions, Pytest)
+   Configured automated CI pipeline on Google Cloud Run with Pytest test suites on every commit.
+4. WhatsApp AI LeadAgent & CRM (Python, FastAPI, Gemini, SQLite)
+   API-tested 10+ endpoints with 95% request/response contract validation accuracy.
+
+ACHIEVEMENTS & CERTIFICATIONS
+- GirlScript Summer of Code (GSSoC 2026): Global Rank #29 (Top 0.8%) out of thousands of participants.
+- Cloud Credentials: 36+ Microsoft Learn Badges covering advanced Azure Cloud Architectures.
+- Certifications: McKinsey Forward Program; Google Cloud Intro to Generative AI.
+- AI Launchpad (Interview Kickstart, Aug 2026): Hands-on training in AI agent & multi-agent system architectures.
 """
 
 # Pydantic Schemas for validation
