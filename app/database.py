@@ -15,11 +15,11 @@ root_db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "jobs.db
 if is_vercel:
     SQLITE_DB_PATH = "/tmp/jobs.db"
     use_local_sqlite = True
-    # Seed /tmp/jobs.db from root jobs.db if not present
-    if not os.path.exists(SQLITE_DB_PATH) and os.path.exists(root_db_path):
+    # Always copy latest root jobs.db to /tmp/jobs.db for Vercel execution sync
+    if os.path.exists(root_db_path):
         try:
-            shutil.copy(root_db_path, SQLITE_DB_PATH)
-            logger.info("Copied root jobs.db to /tmp/jobs.db for Vercel execution.")
+            shutil.copy2(root_db_path, SQLITE_DB_PATH)
+            logger.info("Copied latest root jobs.db to /tmp/jobs.db for Vercel execution.")
         except Exception as e:
             logger.warning(f"Could not copy seed jobs.db to /tmp: {e}")
 else:
