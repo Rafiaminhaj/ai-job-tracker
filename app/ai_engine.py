@@ -323,6 +323,7 @@ def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = N
     send_real_hr_email(target_hr, cleaned_company, inferred_title, active_resume)
 
     return {
+        "status": "success",
         "title": inferred_title,
         "company": cleaned_company,
         "hr_email": target_hr,
@@ -330,7 +331,7 @@ def run_auto_apply_agent(job_url: str, company: str, hr_email: Optional[str] = N
         "email_body": email_body,
         "form_submitted": True,
         "email_dispatched": True,
-        "steps_completed": automation_res["steps_completed"] + [
+        "steps_completed": automation_res.get("steps_completed", []) + [
             f"📄 Verified Resume PDF attached: {active_resume}",
             f"✅ Validated Job Title match: '{inferred_title}' for target URL",
             f"📧 Sent REAL cold outreach email directly to HR inbox: {target_hr}"
