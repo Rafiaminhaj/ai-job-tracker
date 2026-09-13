@@ -381,8 +381,15 @@ function renderJobs(jobs) {
 function updateStats(jobs) {
     const counts = { Applied: 0, Interviewing: 0, Offered: 0, Rejected: 0 };
     jobs.forEach(job => {
-        if (counts.hasOwnProperty(job.status)) {
-            counts[job.status]++;
+        const s = (job.status || "").toLowerCase();
+        if (s.includes("interview")) {
+            counts.Interviewing++;
+        } else if (s.includes("offer")) {
+            counts.Offered++;
+        } else if (s.includes("reject")) {
+            counts.Rejected++;
+        } else {
+            counts.Applied++;
         }
     });
 
