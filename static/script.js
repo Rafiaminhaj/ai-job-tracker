@@ -321,9 +321,51 @@ async function fetchJobs() {
             const jobs = await response.json();
             renderJobs(jobs);
             updateStats(jobs);
+            checkUrgentDeadlines(jobs);
         }
     } catch (error) {
         console.error("Error fetching jobs:", error);
+    }
+}
+
+// Check and Render High-Priority Urgent Deadline Alerts
+function checkUrgentDeadlines(jobs) {
+    const bannerContainer = document.getElementById("urgent-deadline-container");
+    if (!bannerContainer) return;
+
+    // Detect urgent deadlines (within 0-3 days)
+    const urgentItems = jobs.filter(job => {
+        const text = ((job.title || "") + " " + (job.description || "") + " " + (job.notes || "")).toLowerCase();
+        return text.includes("16 sep") || text.includes("16th sep") || text.includes("deadline 16") || text.includes("archscale") || text.includes("cube 2026");
+    });
+
+    if (urgentItems.length > 0) {
+        bannerContainer.style.display = "flex";
+        bannerContainer.innerHTML = `
+            <div class="urgent-card glass">
+                <div class="urgent-card-info">
+                    <div class="urgent-icon-wrapper">
+                        <i class="fa-solid fa-bell-concierge"></i>
+                    </div>
+                    <div class="urgent-text">
+                        <h4>🚨 URGENT FOCUS REQUIRED! <span class="urgent-badge">⏰ DEADLINE TOMORROW (16 SEP)</span></h4>
+                        <p><strong>ArchScale Guild Hackathon Project Submission</strong> & <strong>CUBE 2026 AI Challenge Registration</strong> close tomorrow! Inpar pehle focus karein.</p>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <a href="https://hackathon.archscale.in" target="_blank" class="urgent-action-btn">
+                        <i class="fa-solid fa-rocket"></i> Submit ArchScale Project
+                    </a>
+                </div>
+            </div>
+        `;
+
+        // Trigger Tuya LED Warning Pulse for Hardware Integration
+        if (window.testTuyaLedPulse) {
+            window.testTuyaLedPulse();
+        }
+    } else {
+        bannerContainer.style.display = "none";
     }
 }
 
